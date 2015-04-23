@@ -113,6 +113,7 @@ void draw() {
   textAlign(CENTER);  
 
   rowOfText(headings, columGap, headingHeight);
+  int[] coloursForCurrentSesh = colorArray1d(data, currentRun);
   rowOfText(currentSesh, columGap, currentSeshHeight);
 
   //Text for ranking table
@@ -168,6 +169,26 @@ int[][] colorArray(float[][] dat) {
       } else {
         colourArray[j][i] = white;
       }
+    }
+  }
+  return colourArray;
+}
+
+int[] colorArray1d(float[][] dat, float[] dat1) {
+
+  float[] maskMin = findMinMax(dat, false);
+  float[] maskMax = findMinMax(dat, true);
+  int[] colourArray = new int[dat1.length];
+
+  colourArray[0] = white;
+
+  for (int i = 1; i < dat1.length; i++) {
+    if (dat1[i] == maskMax[i]) {
+      colourArray[i] = pink;
+    } else if (dat1[i] == maskMin[i]) {
+      colourArray[i] = yellow;
+    } else {
+      colourArray[i] = white;
     }
   }
   return colourArray;
@@ -281,6 +302,8 @@ void control() {
       currentRun[2] = t - currentRun[0];
       float ft = (t/1000) - currentRun[0]/1000;
       currentSesh[2] = String.format("%.2f", ft);
+      currentRun[6] = penaltyTimes[6-penaltyVal];
+      currentSesh[6] = String.format("%.2f", float(penaltyTimes[6-penaltyVal]));
       resetSerialData();
       dfrButton.show();
       lcsgButton.show();
@@ -328,9 +351,9 @@ void control() {
     sScreen.stopTimer();
     sScreen.stopTimer1();
     float t = float(sScreen.getTime());
-    currentRun[6] = t;
+    currentRun[7] = t;
     t /= 1000;
-    currentSesh[6] = String.format("%.2f", t);
+    currentSesh[7] = String.format("%.2f", t);
     mode = 105;
     nameSet = false;
     break;
@@ -354,9 +377,8 @@ void control() {
     for (int i = 0; i < currentRun.length; i++) {
       data[index][i] = currentRun[i];
     }
-    //    data[index] = currentRun;
     index++;
-    //    writeTextFile();//////////////////////////////////////Commented Out for testing////////////////////
+    writeTextFile();//////////////////////////////////////Commented Out for testing////////////////////
     mode = 110;
     break;
 
@@ -1031,3 +1053,15 @@ public class SecondApplet extends PApplet {
     return chars;
   }
 }
+
+
+/* To Do List
+
+Put all values into millisecond range and display accordingly
+sScreen function to display ranking table
+Code to handle displaying ranking table on second screen
+Another array for penalty times and countdown times
+Review countdown time and penalty bit times
+Check color display for values at 0 to display proper minimum time colors
+
+*/
