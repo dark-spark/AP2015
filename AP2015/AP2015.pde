@@ -48,10 +48,13 @@ String[] headings = {
   "Total Time"
 };
 
-int[] penaltyTimes = {
+float[] bonusTimes = {
+  0, -10000, -20000, -30000, -40000, -50000
+};
+
+float[] penaltyTimesI = {
   20, 30, 40, 50, 60, 70
 };
-//int[] penaltyTimesI = {20,30,40,50,60,70};
 
 int columGap = 150;
 int headingHeight = 96;
@@ -136,6 +139,7 @@ String[] floatToStringRow(float[] _data) {
   strings = new String[a];
   strings[0] = names[int(_data[0])];
   for (int i = 1; i < a; i++) {
+    _data[i] /= 1000;
     if (_data[i] == 0) {
       strings[i] = "";
     } else {
@@ -302,13 +306,13 @@ void control() {
       currentRun[2] = t - currentRun[0];
       float ft = (t/1000) - currentRun[0]/1000;
       currentSesh[2] = String.format("%.2f", ft);
-      currentRun[6] = penaltyTimes[6-penaltyVal];
-      currentSesh[6] = String.format("%.2f", float(penaltyTimes[6-penaltyVal]));
+      currentRun[6] = bonusTimes[6-penaltyVal];
+      currentSesh[6] = String.format("%.2f", bonusTimes[penaltyVal]/1000);
       resetSerialData();
       dfrButton.show();
       lcsgButton.show();
       pbrButton.hide();
-      sScreen.setTime1(penaltyTimes[penaltyVal]*100);
+      sScreen.setTime1(abs(int(bonusTimes[penaltyVal])));
       sScreen.startTimer1();
       sScreen.timerSwap();
       sScreen.showTimer1();
@@ -378,7 +382,10 @@ void control() {
       data[index][i] = currentRun[i];
     }
     index++;
-    writeTextFile();//////////////////////////////////////Commented Out for testing////////////////////
+    writeTextFile();
+    sScreen.hideTimer1();
+    sScreen.hideTimer();
+    sScreen.showTable();
     mode = 110;
     break;
 
@@ -388,6 +395,8 @@ void control() {
       mode = 10;
       sScreen.resetTimer();
       sScreen.resetTimer1();
+      sScreen.hideTable();
+      sScreen.showTimer();
     }
     break;
   }
@@ -810,20 +819,29 @@ public class SecondApplet extends PApplet {
   int t1 = 0;
   int fontSize = 200;
   int fontSize1 = 100;
-  PFont f, f1;
+  PFont f, f1, f2;
   boolean run = false;
   boolean run1 = false;
   boolean countUp = false;
-  boolean showTimer = true;
+  boolean showTimer = false;
   boolean showTimer1 = false;
   boolean timerSwap = false;
+  boolean showTable = true;
+  int[] rowHeights1;
+  int tableHeight1 = 150;
 
   public void setup() {
     background(0);
     noStroke();
     f = createFont("Arial Unicode MS", fontSize);
     f1 = createFont("Arial Unicode MS", fontSize1);
+    f2 = createFont("Calibri Bold", 20);
     textAlign(CENTER);
+
+    rowHeights1 = new int[arrayLength];
+    for (int i = 0; i < rowHeights1.length; i++) {
+      rowHeights1[i] = tableHeight1 + (i * 20);
+    }
   }
 
   public void draw() {
@@ -857,6 +875,24 @@ public class SecondApplet extends PApplet {
     if (checkForZero()) {
       timerSwap = false;
       hideTimer1();
+    }
+    if (showTable) {
+      displayMainTable1(data);
+    }
+  }
+
+  void displayMainTable1(float[][] _data) {
+    boolean sortByMax = false;
+    float[][] displayData = sortResults(7, sortByMax, _data, index);
+    int[][] colorTable = colorArray(displayData);
+
+    fill(255);
+    textFont(f2);
+    textAlign(CENTER);  
+
+    for (int i = 0; i < index; i++) { 
+      String[] displayArray = floatToStringRow(displayData[i]);
+      rowOfText(displayArray, 150, rowHeights1[i], colorTable[i]);
     }
   }
 
@@ -910,6 +946,14 @@ public class SecondApplet extends PApplet {
       return false;
     }
   }
+
+  public void showTable() {
+    showTable = true;
+  }
+
+  public void hideTable() {
+    showTable = false;
+  } 
 
   public void timerSwap() {
     timerSwap = true;
@@ -1056,12 +1100,12 @@ public class SecondApplet extends PApplet {
 
 
 /* To Do List
-
-Put all values into millisecond range and display accordingly
-sScreen function to display ranking table
-Code to handle displaying ranking table on second screen
-Another array for penalty times and countdown times
-Review countdown time and penalty bit times
-Check color display for values at 0 to display proper minimum time colors
-
-*/
+ 
+ Put all values into millisecond range and display accordingly  DONE PENDING TEST
+ sScreen function to display ranking table DEBUG WITH SECOND SCREEN
+ Code to handle displaying ranking table on second screen DONE PENDING TESTING
+ Another array for penalty times and countdown times
+ Review countdown time and penalty bit times
+ Check color display for values at 0 to display proper minimum time colors
+ 
+ */
