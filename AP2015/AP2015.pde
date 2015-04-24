@@ -826,7 +826,7 @@ public class SecondApplet extends PApplet {
   boolean showTimer = false;
   boolean showTimer1 = false;
   boolean timerSwap = false;
-  boolean showTable = true;
+  boolean showTable = false;
   int[] rowHeights1;
   int tableHeight1 = 150;
 
@@ -877,7 +877,7 @@ public class SecondApplet extends PApplet {
       hideTimer1();
     }
     if (showTable) {
-      displayMainTable1(data);
+//      displayMainTable1(data);
     }
   }
 
@@ -1104,8 +1104,8 @@ public class SecondApplet extends PApplet {
  Put all values into millisecond range and display accordingly  DONE PENDING TEST
  sScreen function to display ranking table DEBUG WITH SECOND SCREEN
  Code to handle displaying ranking table on second screen DONE PENDING TESTING
- Another array for penalty times and countdown times
- Review countdown time and penalty bit times
+ Another array for penalty times and countdown times NEEDS WORK
+ Review countdown time and penalty bit times 
  Check color display for values at 0 to display proper minimum time colors
  
  */
