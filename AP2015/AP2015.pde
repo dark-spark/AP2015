@@ -6,7 +6,7 @@ Serial myPort;
 
 int index = 0;
 boolean serial;
-int arrayLength = 100;
+int arrayLength = 10;
 int arrayWidth = 8;
 PFont f1, f2, f3, f4, f5, f6;
 
@@ -136,14 +136,18 @@ void displayMainTable(float[][] _data) {
 String[] floatToStringRow(float[] _data) {
   String[] strings;
   int a = _data.length;
+  float[] d = new float[_data.length];
+  for(int i = 0; i < d.length; i++) {
+    d[i] = _data[i];
+  }
   strings = new String[a];
-  strings[0] = names[int(_data[0])];
+  strings[0] = names[int(d[0])];
   for (int i = 1; i < a; i++) {
-    _data[i] /= 1000;
-    if (_data[i] == 0) {
+    d[i] /= 1000;
+    if (d[i] == 0) {
       strings[i] = "";
     } else {
-      strings[i] = String.format("%.2f", _data[i]);
+      strings[i] = String.format("%.2f", d[i]);
     }
   }
   return strings;
@@ -385,7 +389,7 @@ void control() {
     writeTextFile();
     sScreen.hideTimer1();
     sScreen.hideTimer();
-    sScreen.showTable();
+//    sScreen.showTable();
     mode = 110;
     break;
 
@@ -1093,7 +1097,6 @@ public class SecondApplet extends PApplet {
         chars[i] = str.charAt(i - (chars.length - str.length()));
       }
     }
-
     return chars;
   }
 }
