@@ -268,6 +268,7 @@ void control() {
       currentRun[0] = nameCode(name, names);
       startButton.show();
       sScreen.setTime1(10000);
+      sScreen.showTimer();
       mode = 20;
     }
     break;
